@@ -1,4 +1,4 @@
-FROM archlinux:base
+FROM archlinux:latest
 WORKDIR /invader
 
 # Prepare a build specific user, needed for makepkg
