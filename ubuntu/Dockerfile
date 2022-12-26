@@ -1,6 +1,9 @@
 FROM ubuntu:20.04
 WORKDIR /invader
 
+RUN mkdir /build
+VOLUME [ "/build" ]
+
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=America/New_York
 
@@ -30,6 +33,10 @@ RUN apt-get update && apt-get install -y \
     #libz-dev \
     #pkg-config \
     qt6-base-dev \
+    # Qt5 only needed for backports or old commits
+    #qt5-default \
+    #qtmultimedia5-dev \
+    #libzstd-dev \
     libsdl2-dev \
     libvulkan-dev \
     libflac-dev \
@@ -60,13 +67,3 @@ RUN wget https://www.libsdl.org/release/SDL2-2.0.16.tar.gz && \
     ./configure && \
     make && \
     make install
-
-RUN git clone https://github.com/SnowyMouse/invader
-RUN cd invader && rm -rf ext/riat && \
-    git clone https://github.com/SnowyMouse/riat ext/riat
-
-# Add missing climits include
-RUN sed -i '2 i\#include <climits>' /invader/invader/src/tag/parser/compile/model.cpp
-
-# Build invader
-RUN cd invader && mkdir build && cd build && cmake .. && make -j4
